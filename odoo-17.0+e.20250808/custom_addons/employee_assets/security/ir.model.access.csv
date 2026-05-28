@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_employee_asset_user,employee.assets.request user,model_employee_assets_request,employee_assets.group_asset_user,1,1,1,0
+access_employee_asset_manager,employee.assets.request manager,model_employee_assets_request,employee_assets.group_asset_manager,1,1,1,1
+access_asset_assign_wizard_user,asset.assign.wizard user,model_asset_assign_wizard,employee_assets.group_asset_user,1,0,1,0
+access_asset_assign_wizard_manager,asset.assign.wizard manager,model_asset_assign_wizard,employee_assets.group_asset_manager,1,1,1,1
+

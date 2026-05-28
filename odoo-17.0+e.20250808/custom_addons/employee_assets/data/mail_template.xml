@@ -1,0 +1,28 @@
+<odoo>
+    <data>
+        <record id="email_asset_request_submitted" model="mail.template">
+            <field name="name">Asset Request Submitted</field>
+            <field name="model_id" ref="employee_assets.model_employee_assets_request"/>
+            <field name="subject">Asset Request {{object.name}}</field>
+            <field name="email_from">
+                {{object.employee_id.work_email or user.email}}
+            </field>
+            <field name="email_to">{{object.manager_id.work_email}}</field>
+            <field name="description">Add Description</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear <t t-out="object.manager_id.name"/>,</p>
+                    <p><t t-out="object.employee_id.name"/> has submitted an asset request.</p>
+                    <hr/>
+                    <p><strong>Details:</strong></p>
+                    <ul>
+                        <li><strong>Asset:</strong> <t t-out="object.asset_type.name"/></li>
+                        <li><strong>Quantity:</strong> <t t-out="object.quantity"/></li>
+                        <li><strong>Reason:</strong> <t t-out="object.reason"/> </li>
+                    </ul>
+                    <p>Please log in to the system to approve or reject this request.</p>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

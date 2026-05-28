@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="employee_assets_request_search" model="ir.ui.view">
+        <field name="name">employee.assets.request.search</field>
+        <field name="model">employee.assets.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <group expand="0" string="group by">
+                    <filter name="employee_id"
+                            context="{'group_by':'employee_id'}"/>
+                    <filter name="assigned" string="Assigned"
+                            domain="[('state', 'in', ['assigned'])]"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="employee_assets_request_view_form" model="ir.ui.view">
+        <field name="name">employee.assets.request.view.form</field>
+        <field name="model">employee.assets.request</field>
+        <field name="arch" type="xml">
+            <form string="Employee Asset Requests">
+                <header>
+
+                    <button name="action_submit" type="object" string="Submit" invisible="state != 'draft'"/>
+                    <button name="action_manager_approve" type="object" string="Approve" groups="employee_assets.group_asset_manager"  invisible="state != 'submitted' or not is_current_manager"/>
+                    <button name="action_open_assign_asset_wizard" type="object" string="Assign Asset"  groups="employee_assets.group_asset_manager" invisible="state != 'manager_approved'"/>
+                    <button name="action_reject" type="object" string="Reject"
+                            invisible="state in ('manager_approved','assigned','draft','rejected') or not is_current_manager"/>
+                    <button name="action_cancelled" type="object" string="Cancel"
+                            invisible="state != 'submitted'"/>
+                    <button name="reset_to_draft" type="object" string="Reset to Draft"
+                            invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submitted,assigned"
+                           on_change="1" field_id="state_0"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Employee Information">
+                            <field name="employee_id" readonly="state != 'draft'"/>
+                            <field name="department_id" readonly="1"/>
+                            <field name="manager_id" readonly="1"/>
+                            <field name="is_current_manager" invisible="1"/>
+                        </group>
+                        <group string="Request Details">
+                            <field name="request_date" required="1" readonly="1"/>
+                            <field name="assigned_date" invisible="state != 'assigned'" readonly="1"/>
+                            <field name="assigned_asset_id" invisible="state != 'assigned'" readonly="1"/>
+                            <field name="asset_type"
+                                   readonly="state != 'draft'"/>
+                            <field name="quantity"
+                                   readonly="state != 'draft'"/>
+                            <field name="reason" required="1"
+                                   readonly="state != 'draft'"/>
+                        </group>
+
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="employee_assets_request_view_tree" model="ir.ui.view">
+        <field name="name">employee.assets.request.view.tree</field>
+        <field name="model">employee.assets.request</field>
+        <field name="arch" type="xml">
+            <tree string="Employee Asset Requests">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="asset_type"/>
+                <field name="quantity"/>
+                <field name="reason"/>
+                <field name="state"/>
+                <field name="request_date" optional="show"/>
+                <field name="assigned_date" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="employee_assets_assignment_tree" model="ir.ui.view">
+        <field name="name">employee.assets.assignment.tree</field>
+        <field name="model">employee.assets.request</field>
+        <field name="arch" type="xml">
+            <tree string="Asset Assignment Report">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="asset_type"/>
+                <field name="assigned_date"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="employee_assets_assignment_pivot" model="ir.ui.view">
+        <field name="name">employee.assets.assignment.pivot</field>
+        <field name="model">employee.assets.request</field>
+        <field name="arch" type="xml">
+            <pivot string="Asset Assignment Analysis">
+                <field name="employee_id" type="row"/>
+                <field name="asset_type" type="col"/>
+                <field name="assigned_date" interval="month"/>
+                <field name="quantity" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+
+
+    <record id="employee_assets_request_user_rule" model="ir.rule">
+        <field name="name">Employee - Own Asset Requests</field>
+        <field name="model_id" ref="model_employee_assets_request"/>
+        <field name="domain_force">
+            [('employee_id.user_id', '=', user.id)]
+        </field>
+        <field name="groups" eval="[(4, ref('employee_assets.group_asset_user'))]"/>
+    </record>
+
+    <record id="employee_assets_request_manager_rule" model="ir.rule">
+        <field name="name">Manager - All Asset Requests</field>
+        <field name="model_id" ref="model_employee_assets_request"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="groups" eval="[(4, ref('employee_assets.group_asset_manager'))]"/>
+    </record>
+
+
+
+
+
+</odoo>

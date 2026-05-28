@@ -1,0 +1,11 @@
+<odoo>
+    <data>
+        <record id="mail_activity_asset_request_approval" model="mail.activity.type">
+            <field name="name">Asset Request Approval</field>
+            <field name="summary">Approve Asset Request</field>
+            <field name="icon">fa-laptop</field>
+            <field name="res_model">employee.assets.request</field>
+        </record>
+    </data>
+
+</odoo>
